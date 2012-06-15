@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<configuration>
+    <openbydefault>true</openbydefault>
+    <icon>assets/universe.jpg</icon>
+    <label>Hello Universe</label>
+    <description>A very basic "hello world" style widget (v3.0.0.1)</description>
+    <helpurl>https://github.com/bsvensson/Hello-Universe-Widget</helpurl>
+    <widgetversion>3.0.0.1</widgetversion>
+</configuration>

@@ -1,0 +1,4 @@
+<configuration>
+    <content>Hello Universe</content>
+    <footnote>This widget was created to show how to use custom widgets with the applicaiton builder.</footnote>
+</configuration>
