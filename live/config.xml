@@ -7,9 +7,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 -->
 <configuration>
-    <title>ArcGIS Viewer for Flex</title>
-    <subtitle>a configurable web mapping application</subtitle>
-    <logo>assets/images/logo.png</logo>
     <style>
         <colors>0xFFFFFF,0x333333,0x101010,0x000000,0xFFD700</colors>
         <alpha>0.8</alpha>
@@ -23,13 +20,8 @@
     <widget right="20" top="55"    config="widgets/MapSwitcher/MapSwitcherWidget.xml" url="widgets/MapSwitcher/MapSwitcherWidget.swf"/>
     <widget left="0"   top="0"     config="widgets/HeaderController/HeaderControllerWidget.xml" url="widgets/HeaderController/HeaderControllerWidget.swf"/>
 
-    <map wraparound180="true" initialextent="-14083000 3139000 -10879000 5458000" fullextent="-20000000 -20000000 20000000 20000000" top="40" addarcgisbasemaps="true">
+    <map wraparound180="true" top="40" addarcgisbasemaps="true">
         <operationallayers>
-            <layer label="Demographics" type="tiled" visible="false" alpha="0.5"
-                   url="http://server.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Median_Household_Income/MapServer">
-            </layer>
-            <layer label="Fires" type="feature" visible="false" alpha="1.0"
-                   url="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Fire/Sheep/FeatureServer/0"/>
         </operationallayers>
     </map>
 
