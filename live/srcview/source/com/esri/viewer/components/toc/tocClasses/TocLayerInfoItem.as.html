@@ -1,0 +1,66 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>TocLayerInfoItem.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptComment">///////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptComment">// Copyright (c) 2010-2011 Esri. All Rights Reserved.
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">// Licensed under the Apache License, Version 2.0 (the "License");
+</span><span class="ActionScriptComment">// you may not use this file except in compliance with the License.
+</span><span class="ActionScriptComment">// You may obtain a copy of the License at
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">//    http://www.apache.org/licenses/LICENSE-2.0
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">// Unless required by applicable law or agreed to in writing, software
+</span><span class="ActionScriptComment">// distributed under the License is distributed on an "AS IS" BASIS,
+</span><span class="ActionScriptComment">// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span><span class="ActionScriptComment">// See the License for the specific language governing permissions and
+</span><span class="ActionScriptComment">// limitations under the License.
+</span><span class="ActionScriptComment">///////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">viewer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">components</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">toc</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tocClasses</span>
+<span class="ActionScriptBracket/Brace">{</span>
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">layers</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">supportClasses</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">LayerInfo</span>;
+
+<span class="ActionScriptASDoc">/**
+ * A TOC item representing a member layer of an ArcGIS or ArcIMS map service.
+ * This includes group layers that contain other member layers.
+ *
+ * @private
+ */</span>
+<span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">TocLayerInfoItem</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">TocItem</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">TocLayerInfoItem</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">parentItem</span>:<span class="ActionScriptDefault_Text">TocItem</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">layerInfo</span>:<span class="ActionScriptDefault_Text">LayerInfo</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">isVisible</span>:<span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">isInScaleRange</span>:<span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">parentItem</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptDefault_Text">_layerInfo</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">layerInfo</span>;
+        <span class="ActionScriptDefault_Text">label</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">layerInfo</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span>;
+
+        <span class="ActionScriptDefault_Text">setVisible</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">isVisible</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">setIsInScaleRange</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">isInScaleRange</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//  Property:  layerInfo
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_layerInfo</span>:<span class="ActionScriptDefault_Text">LayerInfo</span>;
+
+    <span class="ActionScriptASDoc">/**
+     * The map layer info that backs this TOC item.
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">layerInfo</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">LayerInfo</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_layerInfo</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

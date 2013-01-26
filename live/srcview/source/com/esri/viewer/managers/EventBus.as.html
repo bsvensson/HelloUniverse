@@ -1,0 +1,76 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>EventBus.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptComment">///////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptComment">// Copyright (c) 2010-2011 Esri. All Rights Reserved.
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">// Licensed under the Apache License, Version 2.0 (the "License");
+</span><span class="ActionScriptComment">// you may not use this file except in compliance with the License.
+</span><span class="ActionScriptComment">// You may obtain a copy of the License at
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">//    http://www.apache.org/licenses/LICENSE-2.0
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">// Unless required by applicable law or agreed to in writing, software
+</span><span class="ActionScriptComment">// distributed under the License is distributed on an "AS IS" BASIS,
+</span><span class="ActionScriptComment">// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span><span class="ActionScriptComment">// See the License for the specific language governing permissions and
+</span><span class="ActionScriptComment">// limitations under the License.
+</span><span class="ActionScriptComment">///////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">viewer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">managers</span>
+<span class="ActionScriptBracket/Brace">{</span>
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Event</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">EventDispatcher</span>;
+
+<span class="ActionScriptASDoc">/**
+ * The EventBus allows centrallized communication among modules without
+ * point-to-point messaging. It uses the singleton design pattern
+ * to make sure one event bus is available globally. The bus itself
+ * is only available to the container. Modules use the container's
+ * static method to communicate with the event bus.
+ */</span>
+<span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">EventBus</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">EventDispatcher</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptASDoc">/** Application event bus instance */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">instance</span>:<span class="ActionScriptDefault_Text">EventBus</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">EventBus</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+
+    <span class="ActionScriptASDoc">/**
+     * Normally the EventBus is not instantiated via the &lt;b&gt;new&lt;/b&gt; method directly.
+     * The constructor helps enforce only one EvenBus availiable for the application
+     * (singeton) so that it asures the communication only via a sigle event bus.
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">EventBus</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     * The factory method is used to create a instance of the EventBus. It returns
+     * the only instanace of EventBus and makes sure no another instance is created.
+     */</span>
+    <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Deprecated</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"instance"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getInstance</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">EventBus</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">instance</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     * Basic dispatch function, dispatches simple named events. In the case
+     * that the event is only significant by the event token (type string),
+     * this new dispatch method simplify the code.
+     */</span>
+    <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Deprecated</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"AppEvent.dispatch"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">dispatch</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">type</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Event</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">type</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

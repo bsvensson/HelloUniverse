@@ -1,0 +1,423 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>GPParamHandler.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptComment">///////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptComment">// Copyright (c) 2011 Esri. All Rights Reserved.
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">// Licensed under the Apache License, Version 2.0 (the "License");
+</span><span class="ActionScriptComment">// you may not use this file except in compliance with the License.
+</span><span class="ActionScriptComment">// You may obtain a copy of the License at
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">//    http://www.apache.org/licenses/LICENSE-2.0
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">// Unless required by applicable law or agreed to in writing, software
+</span><span class="ActionScriptComment">// distributed under the License is distributed on an "AS IS" BASIS,
+</span><span class="ActionScriptComment">// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span><span class="ActionScriptComment">// See the License for the specific language governing permissions and
+</span><span class="ActionScriptComment">// limitations under the License.
+</span><span class="ActionScriptComment">///////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">widgets</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Geoprocessing</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">supportClasses</span>
+<span class="ActionScriptBracket/Brace">{</span>
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FeatureSet</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Graphic</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geometry</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Extent</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geometry</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Polygon</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">layers</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GraphicsLayer</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GraphicUtil</span>;
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dictionary</span>;
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">collections</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ArrayCollection</span>;
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">widgets</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Geoprocessing</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parameters</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">BaseParamParser</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">widgets</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Geoprocessing</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parameters</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FeatureLayerParameter</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">widgets</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Geoprocessing</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parameters</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GPParameterTypes</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">widgets</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Geoprocessing</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parameters</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">IGPFeatureParameter</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">widgets</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Geoprocessing</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parameters</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">IGPParameter</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">widgets</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Geoprocessing</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parameters</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">InputParamParser</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">widgets</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Geoprocessing</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parameters</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">OutputParamParser</span>;
+
+
+<span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">GPParamHandler</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">GPParamHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">paramsXML</span>:<span class="ActionScriptDefault_Text">XML</span><span class="ActionScriptBracket/Brace">)</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">inputParamParser</span>:<span class="ActionScriptDefault_Text">BaseParamParser</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">InputParamParser</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">outputParamParser</span>:<span class="ActionScriptDefault_Text">BaseParamParser</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">OutputParamParser</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">_inputParams</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">inputParamParser</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parseParameters</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">paramsXML</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">inputparams</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">_outputParams</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">outputParamParser</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parseParameters</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">paramsXML</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">outputparams</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">_totalOutputFeatures</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">getTotalFeatures</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_outputParams</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">_totalInputFeatures</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">getTotalFeatures</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_inputParams</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_totalInputFeatures</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_needsToReprojectInputParams</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">hasInputSpatialReferences</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getTotalFeatures</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">params</span>:<span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">int</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">total</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">featureParam</span>:<span class="ActionScriptDefault_Text">IGPFeatureParameter</span>;
+
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">params</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FEATURE_RECORD_SET_LAYER</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">featureParam</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">IGPFeatureParameter</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">total</span><span class="ActionScriptOperator">++</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">total</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getInputParamGeometryMap</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Dictionary</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">inputGeometryMap</span>:<span class="ActionScriptDefault_Text">Dictionary</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Dictionary</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">inputFeatureSet</span>:<span class="ActionScriptDefault_Text">FeatureSet</span>;
+
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">inputParam</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_inputParams</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">inputParam</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FEATURE_RECORD_SET_LAYER</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">inputFeatureSet</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">inputParam</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">IGPFeatureParameter</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getRequestObjectValue</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">FeatureSet</span>;
+                <span class="ActionScriptDefault_Text">inputGeometryMap</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">inputParam</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">GraphicUtil</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getGeometries</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">inputFeatureSet</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">features</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">inputGeometryMap</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_needsToReprojectInputParams</span>:<span class="ActionScriptDefault_Text">Boolean</span>;
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">needsToReprojectInputParams</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_needsToReprojectInputParams</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">hasInputSpatialReferences</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">atLeastOneSpatialReferenceDefined</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">inputParam</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_inputParams</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">inputParam</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FEATURE_RECORD_SET_LAYER</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">inputParam</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">IGPFeatureParameter</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">spatialReference</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">atLeastOneSpatialReferenceDefined</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                    <span class="ActionScriptReserved">break</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">atLeastOneSpatialReferenceDefined</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_totalInputFeatures</span>:<span class="ActionScriptDefault_Text">int</span>;
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">totalInputFeatures</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">int</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_totalInputFeatures</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_totalOutputFeatures</span>:<span class="ActionScriptDefault_Text">int</span>;
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">totalOutputFeatures</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">int</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_totalOutputFeatures</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_inputParams</span>:<span class="ActionScriptDefault_Text">Array</span>;
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">inputParams</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Array</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_inputParams</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_outputParams</span>:<span class="ActionScriptDefault_Text">Array</span>;
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">outputParams</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Array</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_outputParams</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getVisibleInputParams</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Array</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">getVisibleParams</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_inputParams</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getVisibleParams</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">params</span>:<span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Array</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">visibleParams</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> [];
+
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">params</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">visible</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">visibleParams</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">visibleParams</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getIncompleteRequiredFields</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">params</span>:<span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Array</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">incompleteRequiredFields</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> [];
+
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">params</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">required</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">hasValidValue</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">incompleteRequiredFields</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">incompleteRequiredFields</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getIncompleteRequiredInputParams</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Array</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">getIncompleteRequiredFields</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_inputParams</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createInputRequestObject</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Object</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">createRequestObject</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_inputParams</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createRequestObject</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">params</span>:<span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Object</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">requestObject</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> {};
+
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">params</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">requestObject</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">param</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getRequestObjectValue</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">requestObject</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">findInputParamByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">IGPParameter</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">findParamByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_inputParams</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">findOutputParamByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">IGPParameter</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">findParamByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_outputParams</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">findParamByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">params</span>:<span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">IGPParameter</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">foundParam</span>:<span class="ActionScriptDefault_Text">IGPParameter</span>;
+
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">params</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">foundParam</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">param</span>;
+                <span class="ActionScriptReserved">break</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">foundParam</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">hasVisibleOutput</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">hasVisibleOutputParam</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">outputParams</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">outputParams</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">isVisibleOutputType</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">hasVisibleOutputParam</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                    <span class="ActionScriptReserved">break</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">hasVisibleOutputParam</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">isVisibleOutputType</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">isVisibleOutput</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+
+        <span class="ActionScriptReserved">switch</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">case</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">STRING</span>:
+            <span class="ActionScriptReserved">case</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">BOOLEAN</span>:
+            <span class="ActionScriptReserved">case</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">LONG</span>:
+            <span class="ActionScriptReserved">case</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">DOUBLE</span>:
+            <span class="ActionScriptReserved">case</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">DATE</span>:
+            <span class="ActionScriptReserved">case</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">LINEAR_UNIT</span>:
+            <span class="ActionScriptReserved">case</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">RASTER_DATA_LAYER</span>:
+            <span class="ActionScriptReserved">case</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">RECORD_SET</span>:
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">isVisibleOutput</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                <span class="ActionScriptReserved">break</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">default</span>:
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">isVisibleOutput</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">isVisibleOutput</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">showFeatureLayers</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">toggleFeatureParameterLayerVisibility</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">true</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">hideFeatureLayers</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">toggleFeatureParameterLayerVisibility</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">false</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getOutputFeatureParams</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Array</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">outputFeatureParams</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> [];
+
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_outputParams</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FEATURE_RECORD_SET_LAYER</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">outputFeatureParams</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">outputFeatureParams</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getOutputFeaturesExtent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Extent</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">featureParam</span>:<span class="ActionScriptDefault_Text">IGPFeatureParameter</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">featureGraphicProvider</span>:<span class="ActionScriptDefault_Text">ArrayCollection</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">features</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> [];
+
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_outputParams</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FEATURE_RECORD_SET_LAYER</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">featureParam</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">IGPFeatureParameter</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">featureGraphicProvider</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">featureParam</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">layer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">graphicProvider</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">ArrayCollection</span>;
+                <span class="ActionScriptDefault_Text">features</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">features</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">concat</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">featureGraphicProvider</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">source</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">GraphicUtil</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getGraphicsExtent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">features</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">graphicsLayerBelongsToFeatureParam</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">graphicsLayer</span>:<span class="ActionScriptDefault_Text">GraphicsLayer</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">graphicsLayerBelongsToFeatureParam</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">featureParam</span>:<span class="ActionScriptDefault_Text">IGPFeatureParameter</span>;
+
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_outputParams</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FEATURE_RECORD_SET_LAYER</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">featureParam</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">IGPFeatureParameter</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">featureParam</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">layer</span> <span class="ActionScriptOperator">===</span> <span class="ActionScriptDefault_Text">graphicsLayer</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">graphicsLayerBelongsToFeatureParam</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                    <span class="ActionScriptReserved">break</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">graphicsLayerBelongsToFeatureParam</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">toggleFeatureParameterLayerVisibility</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">visible</span>:<span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">inputParam</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_inputParams</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">inputParam</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FEATURE_RECORD_SET_LAYER</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">inputParam</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">IGPFeatureParameter</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">layer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">visible</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">visible</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">outputParam</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_outputParams</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">outputParam</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FEATURE_RECORD_SET_LAYER</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">outputParam</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">IGPFeatureParameter</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">layer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">visible</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">visible</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">clearOutputFeatures</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">clearFeatures</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_outputParams</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">clearFeatures</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">params</span>:<span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">params</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">GPParameterTypes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FEATURE_RECORD_SET_LAYER</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">param</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">IGPFeatureParameter</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">layer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">clear</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">clearInputFeatures</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">clearFeatures</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_inputParams</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">hasMapExtentInputParams</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">hasParamWithMapExtentMode</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">featureParam</span>:<span class="ActionScriptDefault_Text">IGPFeatureParameter</span>;
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_inputParams</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">featureParam</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">param</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">IGPFeatureParameter</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">featureParam</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">featureParam</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">FeatureLayerParameter</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MAP_EXTENT_SOURCE</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">hasParamWithMapExtentMode</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                <span class="ActionScriptReserved">break</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">hasParamWithMapExtentMode</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">updateMapExtentInputParams</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">extent</span>:<span class="ActionScriptDefault_Text">Extent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">extentPolygon</span>:<span class="ActionScriptDefault_Text">Polygon</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">extent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">toPolygon</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">featureParam</span>:<span class="ActionScriptDefault_Text">IGPFeatureParameter</span>;
+        <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">param</span>:<span class="ActionScriptDefault_Text">IGPParameter</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_inputParams</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">featureParam</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">param</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">IGPFeatureParameter</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">featureParam</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">featureParam</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">FeatureLayerParameter</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MAP_EXTENT_SOURCE</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">featureParam</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">layer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">clear</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">featureParam</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">layer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">add</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Graphic</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">extentPolygon</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

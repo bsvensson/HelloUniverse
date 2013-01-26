@@ -1,0 +1,204 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>AutoFontLabel.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptComment">///////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptComment">// Copyright (c) 2010-2011 Esri. All Rights Reserved.
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">// Licensed under the Apache License, Version 2.0 (the "License");
+</span><span class="ActionScriptComment">// you may not use this file except in compliance with the License.
+</span><span class="ActionScriptComment">// You may obtain a copy of the License at
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">//    http://www.apache.org/licenses/LICENSE-2.0
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">// Unless required by applicable law or agreed to in writing, software
+</span><span class="ActionScriptComment">// distributed under the License is distributed on an "AS IS" BASIS,
+</span><span class="ActionScriptComment">// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span><span class="ActionScriptComment">// See the License for the specific language governing permissions and
+</span><span class="ActionScriptComment">// limitations under the License.
+</span><span class="ActionScriptComment">///////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">viewer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">components</span>
+<span class="ActionScriptBracket/Brace">{</span>
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Event</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">TimerEvent</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">TextLineMetrics</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Timer</span>;
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">EventPriority</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FlexGlobals</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">UITextFormat</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FlexEvent</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">styles</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">CSSStyleDeclaration</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">styles</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">IStyleManager2</span>;
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">spark</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">components</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Label</span>;
+
+<span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Event</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"textChanged"</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">type</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">"flash.events.Event"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+<span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">AutoFontLabel</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">Label</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">TEXT_CHANGED</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">"textChanged"</span>;
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">MIN_FONT_RESIZE_DELAY</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> 50;
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">minFontSize</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 10;
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">autoShrinking</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">initialFontSize</span>:<span class="ActionScriptDefault_Text">Number</span>;
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">fontResizeTimer</span>:<span class="ActionScriptDefault_Text">Timer</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Timer</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">MIN_FONT_RESIZE_DELAY</span><span class="ActionScriptOperator">,</span> 1<span class="ActionScriptBracket/Brace">)</span>;
+
+    <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">text</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptDefault_Text">value</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+            <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Event</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">TEXT_CHANGED</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">AutoFontLabel</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">FlexEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">PREINITIALIZE</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">preinitializeHandler</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">EventPriority</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">DEFAULT_HANDLER</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">FlexEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">UPDATE_COMPLETE</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">updateCompleteHandler</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">EventPriority</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">DEFAULT_HANDLER</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">fontResizeTimer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">TimerEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">TIMER_COMPLETE</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">fontResizeTimer_timerCompleteHandler</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptOperator">,</span> 0<span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">true</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">preinitializeHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span>:<span class="ActionScriptDefault_Text">FlexEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">initFontSize</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">setStyle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"lineBreak"</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptString">"explicit"</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">initFontSize</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">topLevelStyleManager</span>:<span class="ActionScriptDefault_Text">IStyleManager2</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">FlexGlobals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">topLevelApplication</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">styleManager</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">style</span>:<span class="ActionScriptDefault_Text">CSSStyleDeclaration</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">topLevelStyleManager</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getStyleDeclaration</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"."</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">styleName</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptDefault_Text">initialFontSize</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">style</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getStyle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"fontSize"</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Number</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">updateCompleteHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span>:<span class="ActionScriptDefault_Text">FlexEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">maxWidth</span>;
+
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">fontResizeTimer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">running</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">fontResizeTimer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">reset</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptDefault_Text">fontResizeTimer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">start</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">fontResizeTimer_timerCompleteHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span>:<span class="ActionScriptDefault_Text">TimerEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">resizeLabel</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">resizeLabel</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">constrainTextToWidth</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">canFit</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">setStyle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"lineBreak"</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptString">"explicit"</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">showTruncationTip</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">Math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">min</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">maxWidth</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">+</span> 5<span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptReserved">else</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">setStyle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"lineBreak"</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptString">"toFit"</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">maxDisplayedLines</span> <span class="ActionScriptOperator">=</span> 1;
+            <span class="ActionScriptDefault_Text">showTruncationTip</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">constrainTextToWidth</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">&lt;=</span> 0<span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">topLevelStyleManager</span>:<span class="ActionScriptDefault_Text">IStyleManager2</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">FlexGlobals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">topLevelApplication</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">styleManager</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">style</span>:<span class="ActionScriptDefault_Text">CSSStyleDeclaration</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">topLevelStyleManager</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getStyleDeclaration</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"."</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">styleName</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">fontSize</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">initialFontSize</span>;
+
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">autoShrinking</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">fontSize</span> <span class="ActionScriptOperator">&gt;</span> <span class="ActionScriptDefault_Text">minFontSize</span>
+                <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">getTextWidth</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">text</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">fontSize</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">style</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">&gt;</span> <span class="ActionScriptDefault_Text">width</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">fontSize</span> <span class="ActionScriptOperator">-=</span> 0.5;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptDefault_Text">setStyle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"fontSize"</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">fontSize</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getRequiredWidthToDisplayFullText</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">maxWidth</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">desiredWidth</span>:<span class="ActionScriptDefault_Text">Number</span>;
+
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">maxWidth</span> <span class="ActionScriptOperator">&gt;</span> 0<span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">topLevelStyleManager</span>:<span class="ActionScriptDefault_Text">IStyleManager2</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">FlexGlobals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">topLevelApplication</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">styleManager</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">style</span>:<span class="ActionScriptDefault_Text">CSSStyleDeclaration</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">topLevelStyleManager</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getStyleDeclaration</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"."</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">styleName</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">fontSize</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">minFontSize</span>;
+
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">fontSize</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">initialFontSize</span>
+                <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">getTextWidth</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">text</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">fontSize</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">style</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">maxWidth</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">fontSize</span> <span class="ActionScriptOperator">+=</span> 0.5;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptDefault_Text">desiredWidth</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">getTextWidth</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">text</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">fontSize</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">style</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">+</span> 10;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">desiredWidth</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getTextWidth</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">text</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">fontSize</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">style</span>:<span class="ActionScriptDefault_Text">CSSStyleDeclaration</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">textFormat</span>:<span class="ActionScriptDefault_Text">UITextFormat</span> <span class="ActionScriptOperator">=</span>
+            <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">UITextFormat</span><span class="ActionScriptBracket/Brace">(</span>
+            <span class="ActionScriptDefault_Text">FlexGlobals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">topLevelApplication</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">systemManager</span><span class="ActionScriptOperator">,</span>
+            <span class="ActionScriptDefault_Text">style</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getStyle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"fontFamily"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">,</span>
+            <span class="ActionScriptDefault_Text">fontSize</span><span class="ActionScriptOperator">,</span>
+            <span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span>
+            <span class="ActionScriptDefault_Text">style</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getStyle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"fontWeight"</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">"bold"</span><span class="ActionScriptOperator">,</span>
+            <span class="ActionScriptDefault_Text">style</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getStyle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"fontStyle"</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">"italic"</span><span class="ActionScriptOperator">,</span>
+            <span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span>
+            <span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span>
+            <span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span>
+            <span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span>
+            <span class="ActionScriptDefault_Text">style</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getStyle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"paddingLeft"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">,</span>
+            <span class="ActionScriptDefault_Text">style</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getStyle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"paddingRight"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">,</span>
+            <span class="ActionScriptDefault_Text">style</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getStyle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"textIndent"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">textFormat</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">antiAliasType</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">AntiAliasType</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ADVANCED</span>;
+        <span class="ActionScriptDefault_Text">textFormat</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">gridFitType</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GridFitType</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">PIXEL</span>;
+
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">textMetrics</span>:<span class="ActionScriptDefault_Text">TextLineMetrics</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">textFormat</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">measureText</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">text</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">textMetrics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">width</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">canFit</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">topLevelStyleManager</span>:<span class="ActionScriptDefault_Text">IStyleManager2</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">FlexGlobals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">topLevelApplication</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">styleManager</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">style</span>:<span class="ActionScriptDefault_Text">CSSStyleDeclaration</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">topLevelStyleManager</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getStyleDeclaration</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"."</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">styleName</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">fontSize</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">style</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getStyle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"fontSize"</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Number</span>;
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">getTextWidth</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">text</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">fontSize</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">style</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">&lt;=</span> <span class="ActionScriptDefault_Text">width</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

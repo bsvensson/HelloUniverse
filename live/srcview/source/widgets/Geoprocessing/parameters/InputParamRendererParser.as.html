@@ -1,0 +1,39 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>InputParamRendererParser.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">widgets</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Geoprocessing</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parameters</span>
+<span class="ActionScriptBracket/Brace">{</span>
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">symbols</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SimpleFillSymbol</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">symbols</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SimpleLineSymbol</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">symbols</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SimpleMarkerSymbol</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">viewer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">RendererParser</span>;
+
+<span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">InputParamRendererParser</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">RendererParser</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptComment">//override default symbols to match draw widget defaults
+</span>
+    <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createDefaultPointSymbol</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">SimpleMarkerSymbol</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SimpleMarkerSymbol</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">SimpleMarkerSymbol</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">STYLE_CIRCLE</span><span class="ActionScriptOperator">,</span> 15<span class="ActionScriptOperator">,</span> 0x3FAFDC<span class="ActionScriptOperator">,</span> 1<span class="ActionScriptOperator">,</span> 0<span class="ActionScriptOperator">,</span> 0<span class="ActionScriptOperator">,</span> 0<span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SimpleLineSymbol</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createDefaultPolygonSymbol</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">SimpleFillSymbol</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SimpleFillSymbol</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">SimpleFillSymbol</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">STYLE_SOLID</span><span class="ActionScriptOperator">,</span> 0x3FAFDC<span class="ActionScriptOperator">,</span> 1<span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SimpleLineSymbol</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createDefaultPolylineSymbol</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">SimpleLineSymbol</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SimpleLineSymbol</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">SimpleLineSymbol</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">STYLE_SOLID</span><span class="ActionScriptOperator">,</span> 0x3FAFDC<span class="ActionScriptOperator">,</span> 1<span class="ActionScriptOperator">,</span> 5<span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

@@ -1,0 +1,121 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>ResultItem.as</title>
+<link rel="stylesheet" type="text/css" href="../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptComment">///////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptComment">// Copyright (c) 2010-2011 Esri. All Rights Reserved.
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">// Licensed under the Apache License, Version 2.0 (the "License");
+</span><span class="ActionScriptComment">// you may not use this file except in compliance with the License.
+</span><span class="ActionScriptComment">// You may obtain a copy of the License at
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">//    http://www.apache.org/licenses/LICENSE-2.0
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">// Unless required by applicable law or agreed to in writing, software
+</span><span class="ActionScriptComment">// distributed under the License is distributed on an "AS IS" BASIS,
+</span><span class="ActionScriptComment">// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span><span class="ActionScriptComment">// See the License for the specific language governing permissions and
+</span><span class="ActionScriptComment">// limitations under the License.
+</span><span class="ActionScriptComment">///////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">widgets</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">supportClasses</span>
+<span class="ActionScriptBracket/Brace">{</span>
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Graphic</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geometry</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Geometry</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geometry</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MapPoint</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geometry</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Multipoint</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geometry</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Polygon</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geometry</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Polyline</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">esri</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ags</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">symbols</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Symbol</span>;
+
+<span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Bindable</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">ResultItem</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">ResultItem</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">graphic</span>:<span class="ActionScriptDefault_Text">Graphic</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">attributes</span>:<span class="ActionScriptDefault_Text">ResultAttributes</span><span class="ActionScriptBracket/Brace">)</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">_graphic</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">graphic</span>;
+        <span class="ActionScriptDefault_Text">_attributes</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">attributes</span>;
+        <span class="ActionScriptDefault_Text">_center</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">getGeomCenter</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">graphic</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_graphic</span>:<span class="ActionScriptDefault_Text">Graphic</span>;
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">graphic</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Graphic</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_graphic</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_attributes</span>:<span class="ActionScriptDefault_Text">ResultAttributes</span>;
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">attributes</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ResultAttributes</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_attributes</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_center</span>:<span class="ActionScriptDefault_Text">MapPoint</span>;
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">center</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">MapPoint</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_center</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">geometry</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Geometry</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_graphic</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geometry</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">symbol</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Symbol</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_graphic</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">symbol</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getGeomCenter</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">graphic</span>:<span class="ActionScriptDefault_Text">Graphic</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">MapPoint</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">point</span>:<span class="ActionScriptDefault_Text">MapPoint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">geometry</span>:<span class="ActionScriptDefault_Text">Geometry</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">graphic</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geometry</span>;
+
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">geometry</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">switch</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">geometry</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">case</span> <span class="ActionScriptDefault_Text">Geometry</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MAPPOINT</span>:
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">point</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">geometry</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">MapPoint</span>;
+                    <span class="ActionScriptReserved">break</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">case</span> <span class="ActionScriptDefault_Text">Geometry</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MULTIPOINT</span>:
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">multipoint</span>:<span class="ActionScriptDefault_Text">Multipoint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">geometry</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Multipoint</span>;
+                    <span class="ActionScriptDefault_Text">point</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">multipoint</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">points</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">multipoint</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">points</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">&gt;</span> 0 <span class="ActionScriptOperator">?</span> <span class="ActionScriptDefault_Text">multipoint</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">points</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">MapPoint</span> : <span class="ActionScriptReserved">null</span>;
+                    <span class="ActionScriptReserved">break</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">case</span> <span class="ActionScriptDefault_Text">Geometry</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">POLYLINE</span>:
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">pl</span>:<span class="ActionScriptDefault_Text">Polyline</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">geometry</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Polyline</span>;
+                    <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">pathCount</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">pl</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">paths</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span>;
+                    <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">pathIndex</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">int</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">pathCount</span> <span class="ActionScriptOperator">/</span> 2<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">-</span> 1<span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">midPath</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">pl</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">paths</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">pathIndex</span><span class="ActionScriptBracket/Brace">]</span>;
+                    <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">ptCount</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">midPath</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span>;
+                    <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">ptIndex</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">int</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">ptCount</span> <span class="ActionScriptOperator">/</span> 2<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">-</span> 1<span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptDefault_Text">point</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">pl</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getPoint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">pathIndex</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">ptIndex</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptReserved">break</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">case</span> <span class="ActionScriptDefault_Text">Geometry</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">POLYGON</span>:
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">poly</span>:<span class="ActionScriptDefault_Text">Polygon</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">geometry</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Polygon</span>;
+                    <span class="ActionScriptDefault_Text">point</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">poly</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">extent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">center</span>;
+                    <span class="ActionScriptReserved">break</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">point</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>
